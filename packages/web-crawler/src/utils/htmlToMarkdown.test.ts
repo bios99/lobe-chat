@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import * as path from 'node:path';
-import { expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { FilterOptions } from '../type';
 import { htmlToMarkdown } from './htmlToMarkdown';
@@ -30,6 +30,6 @@ describe('htmlToMarkdown', () => {
       const data = htmlToMarkdown(html, { url: item.url, filterOptions: item.filterOptions || {} });
 
       expect(data).toMatchSnapshot();
-    });
+    }, 20000);
   });
 });

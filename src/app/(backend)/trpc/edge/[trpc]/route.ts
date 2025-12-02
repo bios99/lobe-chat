@@ -2,17 +2,15 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import type { NextRequest } from 'next/server';
 
 import { pino } from '@/libs/logger';
-import { createContext } from '@/server/context';
+import { createEdgeContext } from '@/libs/trpc/edge/context';
 import { edgeRouter } from '@/server/routers/edge';
-
-export const runtime = 'edge';
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
     /**
      * @link https://trpc.io/docs/v11/context
      */
-    createContext: () => createContext(req),
+    createContext: () => createEdgeContext(req),
 
     endpoint: '/trpc/edge',
 

@@ -1,4 +1,9 @@
 export default {
+  ArgsInput: {
+    addArgument: '添加参数',
+    argumentPlaceholder: '参数 {{index}}',
+    enterFirstArgument: '输入第一个参数...',
+  },
   DragUpload: {
     dragDesc: '拖拽文件到这里，支持上传多个图片。',
     dragFileDesc: '拖拽图片和文件到这里，支持上传多个图片和文件。',
@@ -48,6 +53,10 @@ export default {
       fileCount: '共 {{count}} 项',
       selectedCount: '已选 {{count}} 项',
     },
+    view: {
+      list: '列表视图',
+      masonry: '网格视图',
+    },
   },
   FileParsingStatus: {
     chunks: {
@@ -70,6 +79,35 @@ export default {
   GoBack: {
     back: '返回',
   },
+  HtmlPreview: {
+    actions: {
+      download: '下载',
+      preview: '预览',
+    },
+    iframeTitle: 'HTML 预览',
+    mode: {
+      code: '代码',
+      preview: '预览',
+    },
+    title: 'HTML 预览',
+  },
+  ImageUpload: {
+    actions: {
+      changeImage: '点击更换图片',
+      dropMultipleFiles: '不支持多上传多个文件，只会使用第一个文件',
+    },
+    placeholder: {
+      primary: '添加图片',
+      secondary: '点击或拖拽上传',
+    },
+  },
+  KeyValueEditor: {
+    addButton: '新增一行',
+    deleteTooltip: '删除',
+    duplicateKeyError: '键名必须唯一',
+    keyPlaceholder: '键',
+    valuePlaceholder: '值',
+  },
   MaxTokenSlider: {
     unlimited: '无限制',
   },
@@ -78,9 +116,11 @@ export default {
       custom: '自定义模型，默认设定同时支持函数调用与视觉识别，请根据实际情况验证上述能力的可用性',
       file: '该模型支持上传文件读取与识别',
       functionCall: '该模型支持函数调用（Function Call）',
+      imageOutput: '该模型支持生成图片',
       reasoning: '该模型支持深度思考',
       search: '该模型支持联网搜索',
       tokens: '该模型单个会话最多支持 {{tokens}} Tokens',
+      video: '该模型支持视频识别',
       vision: '该模型支持视觉识别',
     },
     removed: '该模型不在列表中，若取消选中将会自动移除',
@@ -90,8 +130,40 @@ export default {
     emptyProvider: '没有启用的服务商，请前往设置开启',
     goToSettings: '前往设置',
     provider: '服务商',
+    title: '模型',
+  },
+  MultiImagesUpload: {
+    actions: {
+      uploadMore: '点击或拖拽上传更多',
+    },
+    modal: {
+      complete: '完成',
+      newFileIndicator: '新增',
+      selectImageToPreview: '请选择要预览的图片',
+      title: '管理图片 ({{count}})',
+      upload: '上传图片',
+    },
+    placeholder: {
+      primary: '点击或拖拽上传图片',
+      secondary: '支持多张图片选择',
+    },
+    progress: {
+      uploadingWithCount: '{{completed}}/{{total}} 已上传',
+    },
+    validation: {
+      fileSizeExceeded: 'File size exceeded limit',
+      fileSizeExceededDetail:
+        '{{fileName}} ({{actualSize}}) exceeds the maximum size limit of {{maxSize}}',
+      fileSizeExceededMultiple:
+        '{{count}} files exceed the maximum size limit of {{maxSize}}: {{fileList}}',
+      imageCountExceeded: 'Image count exceeded limit',
+    },
   },
   OllamaSetupGuide: {
+    action: {
+      close: '关闭提示',
+      start: '已安装并运行，开始对话',
+    },
     cors: {
       description: '因浏览器安全限制，你需要为 Ollama 进行跨域配置后方可正常使用。',
       linux: {

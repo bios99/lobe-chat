@@ -10,11 +10,14 @@ const n = setNamespace('w');
 
 export interface GlobalWorkspacePaneAction {
   switchBackToChat: (sessionId?: string) => void;
+  toggleAgentSystemRoleExpand: (agentId: string, expanded?: boolean) => void;
   toggleChatSideBar: (visible?: boolean) => void;
+  toggleExpandInputActionbar: (expand?: boolean) => void;
   toggleExpandSessionGroup: (id: string, expand: boolean) => void;
   toggleMobilePortal: (visible?: boolean) => void;
   toggleMobileTopic: (visible?: boolean) => void;
   toggleSystemRole: (visible?: boolean) => void;
+  toggleWideScreen: (enable?: boolean) => void;
   toggleZenMode: () => void;
 }
 
@@ -28,11 +31,32 @@ export const globalWorkspaceSlice: StateCreator<
     get().router?.push(SESSION_CHAT_URL(sessionId || INBOX_SESSION_ID, get().isMobile));
   },
 
+  toggleAgentSystemRoleExpand: (agentId, expanded) => {
+    const { status } = get();
+    const systemRoleExpandedMap = status.systemRoleExpandedMap || {};
+    const nextExpanded = typeof expanded === 'boolean' ? expanded : !systemRoleExpandedMap[agentId];
+
+    get().updateSystemStatus(
+      {
+        systemRoleExpandedMap: {
+          ...systemRoleExpandedMap,
+          [agentId]: nextExpanded,
+        },
+      },
+      n('toggleAgentSystemRoleExpand', { agentId, expanded: nextExpanded }),
+    );
+  },
   toggleChatSideBar: (newValue) => {
     const showChatSideBar =
       typeof newValue === 'boolean' ? newValue : !get().status.showChatSideBar;
 
     get().updateSystemStatus({ showChatSideBar }, n('toggleAgentPanel', newValue));
+  },
+  toggleExpandInputActionbar: (newValue) => {
+    const expandInputActionbar =
+      typeof newValue === 'boolean' ? newValue : !get().status.expandInputActionbar;
+
+    get().updateSystemStatus({ expandInputActionbar }, n('toggleExpandInputActionbar', newValue));
   },
   toggleExpandSessionGroup: (id, expand) => {
     const { status } = get();
@@ -63,6 +87,11 @@ export const globalWorkspaceSlice: StateCreator<
     const showSystemRole = typeof newValue === 'boolean' ? newValue : !get().status.mobileShowTopic;
 
     get().updateSystemStatus({ showSystemRole }, n('toggleMobileTopic', newValue));
+  },
+  toggleWideScreen: (newValue) => {
+    const wideScreen = typeof newValue === 'boolean' ? newValue : !get().status.noWideScreen;
+
+    get().updateSystemStatus({ noWideScreen: wideScreen }, n('toggleWideScreen', newValue));
   },
   toggleZenMode: () => {
     const { status } = get();

@@ -1,6 +1,9 @@
+import { ssrfSafeFetch } from 'ssrf-safe-fetch';
+
 import { CrawlImpl, CrawlSuccessResult } from '../type';
 import { NetworkConnectionError, PageNotFoundError, TimeoutError } from '../utils/errorType';
 import { htmlToMarkdown } from '../utils/htmlToMarkdown';
+import { DEFAULT_TIMEOUT, withTimeout } from '../utils/withTimeout';
 
 const mixinHeaders = {
   // 接受的内容类型
@@ -31,30 +34,16 @@ const mixinHeaders = {
   'sec-fetch-user': '?1',
 };
 
-const TIMEOUT_CONTROL = 10_000;
-
-const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
-  const controller = new AbortController();
-  const timeoutPromise = new Promise<T>((_, reject) => {
-    setTimeout(() => {
-      controller.abort();
-      reject(new TimeoutError(`Request timeout after ${ms}ms`));
-    }, ms);
-  });
-
-  return Promise.race([promise, timeoutPromise]);
-};
-
 export const naive: CrawlImpl = async (url, { filterOptions }) => {
   let res: Response;
 
   try {
     res = await withTimeout(
-      fetch(url, {
+      ssrfSafeFetch(url, {
         headers: mixinHeaders,
         signal: new AbortController().signal,
       }),
-      TIMEOUT_CONTROL,
+      DEFAULT_TIMEOUT,
     );
   } catch (e) {
     const error = e as Error;

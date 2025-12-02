@@ -1,3 +1,5 @@
+import { UIChatMessage } from '@lobechat/types';
+import { LobeAgentConfig } from '@lobechat/types';
 import { act } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
@@ -8,9 +10,6 @@ import { ChatStore } from '@/store/chat';
 import { initialState } from '@/store/chat/initialState';
 import { messageMapKey } from '@/store/chat/utils/messageMapKey';
 import { createServerConfigStore } from '@/store/serverConfig/store';
-import { LobeAgentConfig } from '@/types/agent';
-import { ChatMessage } from '@/types/message';
-import { MetaData } from '@/types/meta';
 import { merge } from '@/utils/merge';
 
 import { chatSelectors } from './selectors';
@@ -46,7 +45,28 @@ const mockMessages = [
       },
     ],
   },
-] as ChatMessage[];
+] as UIChatMessage[];
+
+const mockReasoningMessages = [
+  {
+    id: 'msg1',
+    content: 'Hello World',
+    role: 'user',
+  },
+  {
+    id: 'msg2',
+    content: 'Goodbye World',
+    role: 'user',
+  },
+  {
+    id: 'msg3',
+    content: 'Content Message',
+    role: 'assistant',
+    reasoning: {
+      content: 'Reasoning Content',
+    },
+  },
+] as UIChatMessage[];
 
 const mockedChats = [
   {
@@ -70,7 +90,7 @@ const mockedChats = [
     content: 'Function Message',
     role: 'tool',
     meta: {
-      avatar: '🤯',
+      avatar: DEFAULT_INBOX_AVATAR,
       backgroundColor: 'rgba(0,0,0,0)',
       description: 'inbox.desc',
       title: 'inbox.title',
@@ -85,7 +105,7 @@ const mockedChats = [
       },
     ],
   },
-] as ChatMessage[];
+] as UIChatMessage[];
 
 const mockChatStore = {
   messagesMap: {
@@ -99,7 +119,10 @@ beforeAll(() => {
 });
 
 afterEach(() => {
-  createServerConfigStore().setState({ featureFlags: { edit_agent: true } });
+  const store = createServerConfigStore();
+  store.setState((state) => ({
+    featureFlags: { ...state.featureFlags, isAgentEditable: true },
+  }));
 });
 
 describe('chatSelectors', () => {
@@ -149,7 +172,7 @@ describe('chatSelectors', () => {
           apiName: 'ttt',
           type: 'default',
         },
-      } as ChatMessage;
+      } as UIChatMessage;
       const state = merge(initialStore, {
         messagesMap: {
           [messageMapKey('abc')]: [...mockMessages, toolMessage],
@@ -213,7 +236,7 @@ describe('chatSelectors', () => {
           content: 'Function Message',
           role: 'tool',
           meta: {
-            avatar: '🤯',
+            avatar: DEFAULT_INBOX_AVATAR,
             backgroundColor: 'rgba(0,0,0,0)',
             description: 'inbox.desc',
             title: 'inbox.title',
@@ -270,6 +293,27 @@ describe('chatSelectors', () => {
     });
   });
 
+  describe('latestMessageReasoningContent', () => {
+    it('should return the reasoning content of the latest message', () => {
+      // Prepare a state with a few messages
+      const state = merge(initialStore, {
+        messagesMap: {
+          [messageMapKey('active-session')]: mockReasoningMessages,
+        },
+        activeId: 'active-session',
+      });
+
+      const expectedString = mockReasoningMessages.at(-1)?.reasoning?.content;
+
+      // Call the selector and verify the result
+      const reasoningContent = chatSelectors.mainAILatestMessageReasoningContent(state);
+      expect(reasoningContent).toBe(expectedString);
+
+      // Restore the mocks after the test
+      vi.restoreAllMocks();
+    });
+  });
+
   describe('showInboxWelcome', () => {
     it('should return false if the active session is not the inbox session', () => {
       const state = merge(initialStore, { activeId: 'someActiveId' });
@@ -306,7 +350,7 @@ describe('chatSelectors', () => {
         { id: '3', role: 'tool', content: 'Tool message 1' },
         { id: '4', role: 'user', content: 'Query' },
         { id: '5', role: 'tool', tools: [] },
-      ] as ChatMessage[];
+      ] as UIChatMessage[];
       const state: Partial<ChatStore> = {
         activeId: 'test-id',
         messagesMap: {
@@ -322,7 +366,7 @@ describe('chatSelectors', () => {
       const messages = [
         { id: '1', role: 'user', content: 'Hello' },
         { id: '2', role: 'assistant', content: 'Hi' },
-      ] as ChatMessage[];
+      ] as UIChatMessage[];
       const state: Partial<ChatStore> = {
         activeId: 'test-id',
         messagesMap: {
@@ -398,6 +442,32 @@ describe('chatSelectors', () => {
         toolCallingStreamIds: {},
       };
       expect(chatSelectors.isToolCallStreaming('msg-1', 0)(state as ChatStore)).toBe(false);
+    });
+  });
+
+  describe('activeBaseChats with group chat messages', () => {
+    it('should retrieve agent meta for group chat messages with groupId and agentId', () => {
+      const groupChatMessages = [
+        {
+          id: 'msg1',
+          content: 'Hello from agent',
+          role: 'assistant',
+          groupId: 'group-123',
+          agentId: 'agent-456',
+        },
+      ] as UIChatMessage[];
+
+      const state = merge(initialStore, {
+        messagesMap: {
+          [messageMapKey('group-123')]: groupChatMessages,
+        },
+        activeId: 'group-123',
+      });
+
+      const chats = chatSelectors.activeBaseChats(state);
+      expect(chats).toHaveLength(1);
+      expect(chats[0].id).toBe('msg1');
+      expect(chats[0].meta).toBeDefined();
     });
   });
 });

@@ -1,4 +1,5 @@
-import { FewShots, LLMParams } from '@/types/llm';
+import { FewShots } from '@lobechat/types';
+import { LLMParams } from 'model-bank';
 
 export type TTSServer = 'openai' | 'edge' | 'microsoft';
 
@@ -29,6 +30,8 @@ export interface V6AgentConfig {
   chatConfig: ChatConfig;
   fewShots?: FewShots;
   model: string;
+  openingMessage?: string;
+  openingQuestions?: string[];
   params: LLMParams;
   plugins?: string[];
   provider?: string;

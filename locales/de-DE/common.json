@@ -31,7 +31,8 @@
   "batchDelete": "Massenlöschung",
   "blog": "Produkt-Blog",
   "branching": "Unterthema erstellen",
-  "branchingDisable": "Die Funktion „Unterthema“ ist nur in der Serverversion verfügbar. Wenn Sie diese Funktion benötigen, wechseln Sie bitte in den Serverbereitstellungsmodus oder verwenden Sie LobeChat Cloud.",
+  "branchingDisable": "Die Funktion „Unterthemen“ ist im aktuellen Modus nicht verfügbar. Bitte wechsle in den Postgres-/Pglite-DB-Modus oder nutze LobeHub Cloud, um diese Funktion zu verwenden.",
+  "branchingRequiresSavedTopic": "Das aktuelle Thema wurde nicht gespeichert. Speichern Sie es, um die Unterthemenfunktion nutzen zu können.",
   "cancel": "Abbrechen",
   "changelog": "Änderungsprotokoll",
   "clientDB": {
@@ -41,7 +42,10 @@
     "error": {
       "desc": "Es tut uns leid, während des Initialisierungsprozesses der Pglite-Datenbank ist ein Fehler aufgetreten. Bitte klicken Sie auf die Schaltfläche, um es erneut zu versuchen. Wenn der Fehler nach mehreren Versuchen weiterhin auftritt, <1>reichen Sie bitte ein Problem ein</1>, und wir werden Ihnen umgehend bei der Untersuchung helfen.",
       "detail": "Fehlerursache: [{{type}}] {{message}}. Einzelheiten sind wie folgt:",
+      "detailTitle": "Fehlerursache",
+      "report": "Problem melden",
       "retry": "Erneut versuchen",
+      "selfSolve": "Selbsthilfe",
       "title": "Datenbankinitialisierung fehlgeschlagen"
     },
     "initing": {
@@ -80,6 +84,54 @@
       "button": "Jetzt verwenden",
       "desc": "Jetzt verwenden",
       "title": "PGlite-Datenbank ist bereit"
+    },
+    "solve": {
+      "backup": {
+        "backup": "Sicherung",
+        "backupSuccess": "Sicherung erfolgreich",
+        "desc": "Wichtige Daten aus der aktuellen Datenbank exportieren",
+        "export": "Alle Daten exportieren",
+        "exportDesc": "Die exportierten Daten werden im JSON-Format gespeichert und können für eine spätere Wiederherstellung oder Analyse verwendet werden.",
+        "reset": {
+          "alert": "Warnung",
+          "alertDesc": "Die folgenden Aktionen können zu Datenverlust führen. Bitte stellen Sie sicher, dass Sie wichtige Daten gesichert haben, bevor Sie fortfahren.",
+          "button": "Datenbank vollständig zurücksetzen (alle Daten löschen)",
+          "confirm": {
+            "desc": "Diese Aktion wird alle Daten löschen und ist nicht rückgängig zu machen. Möchten Sie fortfahren?",
+            "title": "Datenbank zurücksetzen bestätigen"
+          },
+          "desc": "Datenbank zurücksetzen, wenn eine Wiederherstellung nicht möglich ist",
+          "title": "Datenbank zurücksetzen"
+        },
+        "restore": "Wiederherstellen",
+        "restoreSuccess": "Wiederherstellung erfolgreich",
+        "title": "Datenbackup"
+      },
+      "diagnosis": {
+        "createdAt": "Erstellungszeit",
+        "migratedAt": "Migration abgeschlossen",
+        "sql": "Migration SQL",
+        "title": "Migrationsstatus"
+      },
+      "repair": {
+        "desc": "Manuelle Verwaltung des Migrationsstatus",
+        "runSQL": "Benutzerdefinierte Ausführung",
+        "sql": {
+          "clear": "Leeren",
+          "desc": "Benutzerdefinierte SQL-Anweisungen ausführen, um Datenbankprobleme zu beheben",
+          "markFinished": "Als abgeschlossen markieren",
+          "placeholder": "SQL-Anweisung eingeben...",
+          "result": "Ausführungsergebnis",
+          "run": "Ausführen",
+          "title": "SQL-Ausführungswerkzeug"
+        },
+        "title": "Migrationskontrolle"
+      },
+      "tabs": {
+        "backup": "Backup und Wiederherstellung",
+        "diagnosis": "Diagnose",
+        "repair": "Reparatur"
+      }
     }
   },
   "close": "Schließen",
@@ -131,8 +183,16 @@
     "title": "Mögen Sie unser Produkt?"
   },
   "fullscreen": "Vollbildmodus",
+  "geminiImageChineseWarning": {
+    "content": "Nano Banana kann bei der Verwendung von Chinesisch möglicherweise keine Bilder generieren. Es wird empfohlen, Englisch zu verwenden, um bessere Ergebnisse zu erzielen.",
+    "continueGenerate": "Weiter generieren",
+    "continueSend": "Weiter senden",
+    "doNotShowAgain": "Nicht mehr anzeigen",
+    "title": "Hinweis zur chinesischen Eingabe"
+  },
   "historyRange": "Verlaufsbereich",
   "import": "Importieren",
+  "importData": "Daten importieren",
   "importModal": {
     "error": {
       "desc": "Es tut uns sehr leid, aber beim Importieren der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder <1>senden Sie uns eine Anfrage</1>, damit wir das Problem umgehend für Sie lösen können.",
@@ -154,7 +214,8 @@
       "sessions": "Assistenten",
       "skips": "Übersprungen (doppelt)",
       "topics": "Themen",
-      "type": "Datentyp"
+      "type": "Datentyp",
+      "update": "Datensatz aktualisiert"
     },
     "title": "Daten importieren",
     "uploading": {
@@ -163,8 +224,19 @@
       "speed": "Upload-Geschwindigkeit"
     }
   },
+  "importPreview": {
+    "confirmImport": "Import bestätigen",
+    "tables": {
+      "count": "Anzahl der Datensätze",
+      "name": "Tabellenname"
+    },
+    "title": "Datenimportvorschau",
+    "totalRecords": "Insgesamt werden {{count}} Datensätze importiert",
+    "totalTables": "{{count}} Tabellen"
+  },
   "information": "Community und Informationen",
   "installPWA": "Installiere die Browser-App",
+  "labs": "Labore",
   "lang": {
     "ar": "Arabisch",
     "bg-BG": "Bulgarisch",
@@ -222,6 +294,8 @@
   "rename": "Umbenennen",
   "reset": "Zurücksetzen",
   "retry": "Erneut versuchen",
+  "run": "Ausführen",
+  "save": "Speichern",
   "send": "Senden",
   "setting": "Einstellung",
   "share": "Teilen",
@@ -260,9 +334,11 @@
     }
   },
   "tab": {
+    "aiImage": "KI-Gemälde",
     "chat": "Chat",
     "discover": "Entdecken",
     "files": "Dateien",
+    "knowledgeBase": "Wissensdatenbank",
     "me": "Ich",
     "setting": "Einstellung"
   },

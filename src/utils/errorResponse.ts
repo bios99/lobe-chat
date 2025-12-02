@@ -1,5 +1,5 @@
-import { AgentRuntimeErrorType, ILobeAgentRuntimeErrorType } from '@/libs/agent-runtime';
-import { ChatErrorType, ErrorResponse, ErrorType } from '@/types/fetch';
+import { AgentRuntimeErrorType, ILobeAgentRuntimeErrorType } from '@lobechat/model-runtime';
+import { ChatErrorType, ErrorResponse, ErrorType } from '@lobechat/types';
 
 const getStatus = (errorType: ILobeAgentRuntimeErrorType | ErrorType) => {
   // InvalidAccessCode / InvalidAzureAPIKey / InvalidOpenAIAPIKey / InvalidZhipuAPIKey ....
@@ -40,6 +40,8 @@ const getStatus = (errorType: ILobeAgentRuntimeErrorType | ErrorType) => {
       return 471;
     }
 
+    // all local provider connection error
+    case AgentRuntimeErrorType.OllamaServiceUnavailable:
     case ChatErrorType.OllamaServiceUnavailable:
     case AgentRuntimeErrorType.OllamaBizError: {
       return 472;

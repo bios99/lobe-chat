@@ -78,6 +78,8 @@ describe('ServerService', () => {
             openai: 'voice-id',
           },
         },
+        openingQuestions: ['Question 1', 'Question 2'],
+        openingMessage: 'Hello, I am [LobeChat](https://github.com/lobehub/lobe-chat).',
       },
       group: 'testGroup',
       meta: { description: 'test' },
@@ -193,7 +195,10 @@ describe('ServerService', () => {
     await service.updateSessionConfig('123', config, signal);
     expect(lambdaClient.session.updateSessionConfig.mutate).toBeCalledWith(
       { id: '123', value: config },
-      { signal },
+      {
+        signal,
+        context: { showNotification: false },
+      },
     );
   });
 

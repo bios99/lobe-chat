@@ -1,15 +1,16 @@
 import { z } from 'zod';
 
-import { serverDB } from '@/database/server';
-import { TopicModel } from '@/database/server/models/topic';
-import { authedProcedure, publicProcedure, router } from '@/libs/trpc';
+import { TopicModel } from '@/database/models/topic';
+import { getServerDB } from '@/database/server';
+import { authedProcedure, publicProcedure, router } from '@/libs/trpc/lambda';
+import { serverDatabase } from '@/libs/trpc/lambda/middleware';
 import { BatchTaskResult } from '@/types/service';
 
-const topicProcedure = authedProcedure.use(async (opts) => {
+const topicProcedure = authedProcedure.use(serverDatabase).use(async (opts) => {
   const { ctx } = opts;
 
   return opts.next({
-    ctx: { topicModel: new TopicModel(serverDB, ctx.userId) },
+    ctx: { topicModel: new TopicModel(ctx.serverDB, ctx.userId) },
   });
 });
 
@@ -74,6 +75,7 @@ export const topicRouter = router({
     .input(
       z.object({
         favorite: z.boolean().optional(),
+        groupId: z.string().nullable().optional(),
         messages: z.array(z.string()).optional(),
         sessionId: z.string().nullable().optional(),
         title: z.string(),
@@ -93,14 +95,15 @@ export const topicRouter = router({
   getTopics: publicProcedure
     .input(
       z.object({
+        containerId: z.string().nullable().optional(),
         current: z.number().optional(),
         pageSize: z.number().optional(),
-        sessionId: z.string().nullable().optional(),
       }),
     )
     .query(async ({ input, ctx }) => {
       if (!ctx.userId) return [];
 
+      const serverDB = await getServerDB();
       const topicModel = new TopicModel(serverDB, ctx.userId);
 
       return topicModel.query(input);

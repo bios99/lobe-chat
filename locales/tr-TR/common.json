@@ -31,7 +31,8 @@
   "batchDelete": "Toplu Sil",
   "blog": "Ürün Blogu",
   "branching": "Alt konu oluştur",
-  "branchingDisable": "«Alt konu» özelliği yalnızca sunucu sürümünde mevcuttur. Bu özelliği kullanmak için lütfen sunucu dağıtım moduna geçin veya LobeChat Cloud'u kullanın.",
+  "branchingDisable": "“Alt Konu” özelliği mevcut modda kullanılamaz. Bu özelliği kullanmak için lütfen Postgres/Pglite DB moduna geçin veya LobeHub Cloud'u kullanın.",
+  "branchingRequiresSavedTopic": "Geçerli konu kaydedilmedi, alt konu özelliğini kullanmak için önce kaydedilmelidir",
   "cancel": "İptal",
   "changelog": "Changelog",
   "clientDB": {
@@ -41,7 +42,10 @@
     "error": {
       "desc": "Üzgünüz, Pglite veritabanı başlatma sırasında bir hata oluştu. Lütfen düğmeye tıklayarak tekrar deneyin. Eğer birden fazla denemeden sonra hala hata alıyorsanız, lütfen <1>bir sorun bildirin</1>, size en kısa sürede yardımcı olacağız.",
       "detail": "Hata Nedeni: [{{type}}] {{message}}. Ayrıntılar aşağıda:",
+      "detailTitle": "Hata Nedeni",
+      "report": "Sorunu Bildir",
       "retry": "Tekrar Dene",
+      "selfSolve": "Kendin Çöz",
       "title": "Veritabanı başlatma hatası"
     },
     "initing": {
@@ -80,6 +84,54 @@
       "button": "Hemen Kullan",
       "desc": "Hemen kullanmak istiyorum",
       "title": "PGlite veritabanı hazır"
+    },
+    "solve": {
+      "backup": {
+        "backup": "Yedekle",
+        "backupSuccess": "Yedekleme Başarılı",
+        "desc": "Mevcut veritabanındaki kritik verileri dışa aktar",
+        "export": "Tüm Verileri Dışa Aktar",
+        "exportDesc": "Dışa aktarılan veriler JSON formatında kaydedilecektir, sonraki kurtarma veya analiz için kullanılabilir.",
+        "reset": {
+          "alert": "Uyarı",
+          "alertDesc": "Aşağıdaki işlemler veri kaybına neden olabilir. Devam etmeden önce önemli verilerinizi yedeklediğinizden emin olun.",
+          "button": "Veritabanını Tamamen Sıfırla (Tüm Verileri Sil)",
+          "confirm": {
+            "desc": "Bu işlem tüm verileri silecektir ve geri alınamaz, devam etmek istediğinizi onaylıyor musunuz?",
+            "title": "Veritabanını Sıfırlamayı Onayla"
+          },
+          "desc": "Geri alınamaz bir durumda veritabanını sıfırla",
+          "title": "Veritabanı Sıfırlama"
+        },
+        "restore": "Geri Yükle",
+        "restoreSuccess": "Geri Yükleme Başarılı",
+        "title": "Veri Yedekleme"
+      },
+      "diagnosis": {
+        "createdAt": "Oluşturulma Zamanı",
+        "migratedAt": "Göç Tamamlanma Zamanı",
+        "sql": "Göç SQL",
+        "title": "Göç Durumu"
+      },
+      "repair": {
+        "desc": "Göç durumunu manuel olarak yönet",
+        "runSQL": "Özel Çalıştır",
+        "sql": {
+          "clear": "Temizle",
+          "desc": "Veritabanı sorunlarını düzeltmek için özel SQL ifadelerini çalıştır",
+          "markFinished": "Tamamlandı Olarak İşaretle",
+          "placeholder": "SQL ifadesini girin...",
+          "result": "Çalıştırma Sonucu",
+          "run": "Çalıştır",
+          "title": "SQL Çalıştırıcı"
+        },
+        "title": "Göç Kontrolü"
+      },
+      "tabs": {
+        "backup": "Yedekleme ve Geri Yükleme",
+        "diagnosis": "Tanı",
+        "repair": "Onarım"
+      }
     }
   },
   "close": "Kapat",
@@ -131,8 +183,16 @@
     "title": "Ürünümüzü Beğendiniz mi?"
   },
   "fullscreen": "Tam Ekran Modu",
+  "geminiImageChineseWarning": {
+    "content": "Nano Banana, Çince kullanıldığında resim oluşturma işlemi bazen başarısız olabilir. Daha iyi sonuçlar için İngilizce kullanmanız önerilir.",
+    "continueGenerate": "Oluşturmaya devam et",
+    "continueSend": "Göndermeye devam et",
+    "doNotShowAgain": "Bir daha gösterme",
+    "title": "Çince Giriş Uyarısı"
+  },
   "historyRange": "Geçmiş Aralığı",
-  "import": "İçe Aktar",
+  "import": "İçe aktar",
+  "importData": "Veri İçe Aktar",
   "importModal": {
     "error": {
       "desc": "Üzgünüz, veri aktarımı sırasında bir hata oluştu. Lütfen tekrar deneyin veya <1>bir sorun bildirin</1>, sorunu çözmek için elimizden geleni yapacağız.",
@@ -154,7 +214,8 @@
       "sessions": "Asistanlar",
       "skips": "Geç",
       "topics": "Konular",
-      "type": "Tip"
+      "type": "Tip",
+      "update": "Kayıt güncellendi"
     },
     "title": "Veri İçe Aktar",
     "uploading": {
@@ -163,8 +224,19 @@
       "speed": "Yükleme Hızı"
     }
   },
+  "importPreview": {
+    "confirmImport": "İçe Aktarmayı Onayla",
+    "tables": {
+      "count": "Kayıt Sayısı",
+      "name": "Tablo Adı"
+    },
+    "title": "Veri İçe Aktarma Önizlemesi",
+    "totalRecords": "Toplam {{count}} kayıt içe aktarılacak",
+    "totalTables": "{{count}} tablo"
+  },
   "information": "Topluluk ve Bilgi",
   "installPWA": "Tarayıcı Uygulamasını Yükle",
+  "labs": "Laboratuvarlar",
   "lang": {
     "ar": "Arapça",
     "bg-BG": "Bulgarca",
@@ -222,6 +294,8 @@
   "rename": "Yeniden İsimlendir",
   "reset": "Reset",
   "retry": "Yeniden Dene",
+  "run": "Çalıştır",
+  "save": "Kaydet",
   "send": "Gönder",
   "setting": "Ayarlar",
   "share": "Paylaş",
@@ -260,9 +334,11 @@
     }
   },
   "tab": {
+    "aiImage": "Yapay Zeka Resim",
     "chat": "Chat",
     "discover": "Keşfet",
     "files": "Dosyalar",
+    "knowledgeBase": "Bilgi Tabanı",
     "me": "ben",
     "setting": "Ayarlar"
   },

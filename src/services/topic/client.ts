@@ -1,6 +1,6 @@
 import { INBOX_SESSION_ID } from '@/const/session';
 import { clientDB } from '@/database/client/db';
-import { TopicModel } from '@/database/server/models/topic';
+import { TopicModel } from '@/database/models/topic';
 import { BaseClientService } from '@/services/baseClientService';
 import { ChatTopic } from '@/types/topic';
 
@@ -38,7 +38,7 @@ export class ClientService extends BaseClientService implements ITopicService {
   getTopics: ITopicService['getTopics'] = async (params) => {
     const data = await this.topicModel.query({
       ...params,
-      sessionId: this.toDbSessionId(params.sessionId),
+      containerId: this.toDbSessionId(params.containerId),
     });
     return data as unknown as Promise<ChatTopic[]>;
   };

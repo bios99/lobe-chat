@@ -5,7 +5,7 @@ import { SWRResponse } from 'swr';
 import type { StateCreator } from 'zustand/vanilla';
 
 import { LOBE_THEME_APPEARANCE } from '@/const/theme';
-import { CURRENT_VERSION } from '@/const/version';
+import { CURRENT_VERSION, isDesktop } from '@/const/version';
 import { useOnlyFetchOnceSWR } from '@/libs/swr';
 import { globalService } from '@/services/global';
 import type { SystemStatus } from '@/store/global/initialState';
@@ -20,8 +20,10 @@ import type { GlobalStore } from '../store';
 const n = setNamespace('g');
 
 export interface GlobalGeneralAction {
-  switchLocale: (locale: LocaleMode) => void;
-  switchThemeMode: (themeMode: ThemeMode) => void;
+  openSessionInNewWindow: (sessionId: string) => Promise<void>;
+  openTopicInNewWindow: (sessionId: string, topicId: string) => Promise<void>;
+  switchLocale: (locale: LocaleMode, params?: { skipBroadcast?: boolean }) => void;
+  switchThemeMode: (themeMode: ThemeMode, params?: { skipBroadcast?: boolean }) => void;
   updateSystemStatus: (status: Partial<SystemStatus>, action?: any) => void;
   useCheckLatestVersion: (enabledCheck?: boolean) => SWRResponse<string>;
   useInitSystemStatus: () => SWRResponse;
@@ -33,18 +35,84 @@ export const generalActionSlice: StateCreator<
   [],
   GlobalGeneralAction
 > = (set, get) => ({
-  switchLocale: (locale) => {
+  openSessionInNewWindow: async (sessionId: string) => {
+    if (!isDesktop) return;
+
+    try {
+      const { dispatch } = await import('@lobechat/electron-client-ipc');
+
+      const url = `/chat?session=${sessionId}&mode=single`;
+
+      const result = await dispatch('createMultiInstanceWindow', {
+        path: url,
+        templateId: 'chatSingle',
+        uniqueId: `chat_${sessionId}`,
+      });
+
+      if (!result.success) {
+        console.error('Failed to open session in new window:', result.error);
+      }
+    } catch (error) {
+      console.error('Error opening session in new window:', error);
+    }
+  },
+
+  openTopicInNewWindow: async (sessionId: string, topicId: string) => {
+    if (!isDesktop) return;
+
+    try {
+      const { dispatch } = await import('@lobechat/electron-client-ipc');
+
+      const url = `/chat?session=${sessionId}&topic=${topicId}&mode=single`;
+
+      const result = await dispatch('createMultiInstanceWindow', {
+        path: url,
+        templateId: 'chatSingle',
+        uniqueId: `chat_${sessionId}_${topicId}`,
+      });
+
+      if (!result.success) {
+        console.error('Failed to open topic in new window:', result.error);
+      }
+    } catch (error) {
+      console.error('Error opening topic in new window:', error);
+    }
+  },
+
+  switchLocale: (locale, { skipBroadcast } = {}) => {
     get().updateSystemStatus({ language: locale });
 
     switchLang(locale);
+
+    if (isDesktop && !skipBroadcast) {
+      (async () => {
+        try {
+          const { dispatch } = await import('@lobechat/electron-client-ipc');
+
+          await dispatch('updateLocale', locale);
+        } catch (error) {
+          console.error('Failed to update locale in main process:', error);
+        }
+      })();
+    }
   },
-  switchThemeMode: (themeMode) => {
+  switchThemeMode: (themeMode, { skipBroadcast } = {}) => {
     get().updateSystemStatus({ themeMode });
 
     setCookie(LOBE_THEME_APPEARANCE, themeMode === 'auto' ? undefined : themeMode);
+
+    if (isDesktop && !skipBroadcast) {
+      (async () => {
+        try {
+          const { dispatch } = await import('@lobechat/electron-client-ipc');
+          await dispatch('updateThemeMode', themeMode);
+        } catch (error) {
+          console.error('Failed to update theme in main process:', error);
+        }
+      })();
+    }
   },
   updateSystemStatus: (status, action) => {
-    // Status cannot be modified when it is not initialized
     if (!get().isStatusInit) return;
 
     const nextStatus = merge(get().status, status);
@@ -60,19 +128,15 @@ export const generalActionSlice: StateCreator<
       enabledCheck ? 'checkLatestVersion' : null,
       async () => globalService.getLatestVersion(),
       {
-        // check latest version every 30 minutes
         focusThrottleInterval: 1000 * 60 * 30,
         onSuccess: (data: string) => {
           if (!valid(CURRENT_VERSION) || !valid(data)) return;
 
-          // Parse versions to ensure we're working with valid SemVer objects
           const currentVersion = parse(CURRENT_VERSION);
           const latestVersion = parse(data);
 
           if (!currentVersion || !latestVersion) return;
 
-          // only compare major and minor versions
-          // solve the problem of frequent patch updates
           const currentMajorMinor = `${currentVersion.major}.${currentVersion.minor}.0`;
           const latestMajorMinor = `${latestVersion.major}.${latestVersion.minor}.0`;
 

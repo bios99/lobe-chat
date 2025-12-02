@@ -1,4 +1,11 @@
 export default {
+  codeInterpreter: {
+    error: '执行错误',
+    executing: '执行中...',
+    files: '文件：',
+    output: '输出：',
+    returnValue: '返回值：',
+  },
   dalle: {
     autoGenerate: '自动生成',
     downloading: 'DallE3 生成的图片链接有效期仅1小时，正在缓存图片到本地...',
@@ -6,6 +13,20 @@ export default {
     generating: '生成中...',
     images: '图片:',
     prompt: '提示词',
+  },
+  localFiles: {
+    file: '文件',
+    folder: '文件夹',
+    open: '打开',
+    openFile: '打开文件',
+    openFolder: '打开文件夹',
+    read: {
+      more: '查看更多',
+    },
+    readFile: '读取文件',
+    readFileError: '读取文件失败，请检查文件路径是否正确',
+    readFiles: '读取文件',
+    readFilesError: '读取文件失败，请检查文件路径是否正确',
   },
   search: {
     createNewSearch: '创建新的搜索记录',
@@ -19,10 +40,50 @@ export default {
       placeholder: '关键词',
       tooltip: '将会重新获取搜索结果，并创建一条新的总结消息',
     },
-    searchEngine: '搜索引擎：',
+    searchCategory: {
+      placeholder: '搜索类别',
+      title: '搜索类别：',
+      value: {
+        files: '文件',
+        general: '通用',
+        images: '图片',
+        it: '信息技术',
+        map: '地图',
+        music: '音乐',
+        news: '新闻',
+        science: '科学',
+        social_media: '社交媒体',
+        videos: '视频',
+      },
+    },
+    searchEngine: {
+      placeholder: '搜索引擎',
+      title: '搜索引擎：',
+    },
     searchResult: '搜索数量：',
+    searchTimeRange: {
+      title: '时间范围：',
+      value: {
+        anytime: '时间不限',
+        day: '一天内',
+        month: '一月内',
+        week: '一周内',
+        year: '一年内',
+      },
+    },
     summary: '总结',
     summaryTooltip: '总结当前内容',
     viewMoreResults: '查看更多 {{results}} 个结果',
+  },
+  updateArgs: {
+    duplicateKeyError: '字段键必须唯一',
+    form: {
+      add: '添加一项',
+      key: '字段键',
+      value: '字段值',
+    },
+    formValidationFailed: '表单验证失败，请检查参数格式',
+    keyRequired: '字段键不能为空',
+    stringifyError: '无法序列化参数，请检查参数格式',
   },
 };
